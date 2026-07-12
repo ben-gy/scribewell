@@ -58,7 +58,7 @@ A journalist at home at 9pm transcribing a sensitive recorded interview they are
 **Protected**
 - The audio/video file and its decoded samples never leave the browser tab.
 - The transcript is generated locally and never transmitted.
-- No analytics, no cookies, no third-party fonts.
+- No cookies, no fingerprinting, no third-party fonts. Anonymous, cookie-less page-view counts via Cloudflare Web Analytics — no personal data, no cross-site tracking.
 
 **Not protected**
 - The **first** model download is fetched from the Hugging Face CDN (huggingface.co) — that reveals *which model* you load, never your audio. After caching, even that stops.

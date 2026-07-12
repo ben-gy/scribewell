@@ -69,7 +69,7 @@ A strict Content-Security-Policy in `index.html` limits network access to `self`
 - Vitest for unit tests
 - GitHub Pages for hosting, deployed via GitHub Actions
 
-No runtime dependencies beyond `@huggingface/transformers`. No analytics, no cookies, no third-party fonts, no telemetry.
+No runtime dependencies beyond `@huggingface/transformers`. No cookies, no fingerprinting, no third-party fonts. Anonymous, cookie-less page-view counts via Cloudflare Web Analytics — no personal data, no cross-site tracking.
 
 ## local development
 

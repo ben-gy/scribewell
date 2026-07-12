@@ -11,7 +11,7 @@
     />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' blob:; worker-src 'self' blob:; connect-src 'self' blob: data: https://huggingface.co https://*.huggingface.co https://cdn.jsdelivr.net; img-src 'self' data: blob:; media-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; font-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'none'"
+      content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' blob: https://static.cloudflareinsights.com; worker-src 'self' blob:; connect-src 'self' blob: data: https://huggingface.co https://*.huggingface.co https://cdn.jsdelivr.net https://cloudflareinsights.com; img-src 'self' data: blob:; media-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; font-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'none'"
     />
     <meta property="og:title" content="Scribewell — private in-browser transcription" />
     <meta
@@ -23,6 +23,7 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <title>Scribewell — private in-browser audio &amp; video transcription</title>
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "ba2bab2193ba42c1bea3d6714fcd0e28"}'></script>
   </head>
   <body>
     <div id="app"></div>
