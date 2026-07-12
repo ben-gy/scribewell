@@ -47,7 +47,7 @@ Decoded audio is handed to the worker as a **transferable** `ArrayBuffer`, so th
 **Protected**
 - Your audio and video files are decoded and transcribed entirely in your browser; they are never uploaded.
 - The transcript is produced on-device and only leaves your machine if *you* copy, share, or download it.
-- No accounts, cookies, analytics, tracking, or third-party fonts.
+- No accounts, cookies, fingerprinting, or third-party fonts. The only analytics is Cloudflare Web Analytics — anonymous, cookie-less page-view counts; no personal data, no cross-site tracking.
 - After the model is cached, the tool works fully offline.
 
 **Not protected**

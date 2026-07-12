@@ -248,7 +248,7 @@ export class AppUI {
           <ul>
             <li>Your audio and video files are decoded and transcribed <strong>entirely in your browser</strong>. They are never uploaded.</li>
             <li>The transcript is generated on-device and only leaves your machine if <em>you</em> copy, share, or download it.</li>
-            <li>No account, no cookies, no analytics, no tracking, no third-party fonts.</li>
+            <li>No account, no cookies, no fingerprinting, no third-party fonts. The only analytics is Cloudflare Web Analytics — anonymous, cookie-less page-view counts; no personal data, no cross-site tracking.</li>
             <li>After the model is cached, the tool works fully <strong>offline</strong>.</li>
           </ul>
         </section>
