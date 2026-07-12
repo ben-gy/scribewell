@@ -2,7 +2,7 @@
 // Model weights are cached separately by @huggingface/transformers via the
 // Cache Storage API, so we deliberately ignore cross-origin requests here.
 
-const CACHE = 'scribewell-shell-v1';
+const CACHE = 'scribewell-shell-v2';
 const SHELL = ['/', '/index.html', '/favicon.svg', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
