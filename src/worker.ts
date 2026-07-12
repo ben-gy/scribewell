@@ -86,12 +86,10 @@ async function transcribe(samples: Float32Array, englishOnly: boolean): Promise<
   if (!transcriber) throw new Error('Model is not loaded.');
   const totalSec = samples.length / 16_000;
 
-  const output = (await transcriber(samples, {
+  const options: Record<string, unknown> = {
     chunk_length_s: 30,
     stride_length_s: 5,
     return_timestamps: true,
-    language: englishOnly ? 'english' : undefined,
-    task: 'transcribe',
     // Fires once per completed 30s chunk — drives determinate progress.
     chunk_callback: (chunk: { chunks?: RawChunk[] }) => {
       const raw = chunk?.chunks ?? [];
@@ -102,7 +100,15 @@ async function transcribe(samples: Float32Array, englishOnly: boolean): Promise<
         post({ type: 'progress', processedSec: processed as number, totalSec });
       }
     },
-  } as unknown as Record<string, unknown>)) as unknown as {
+  };
+  // English-only (.en) models reject `task`/`language`; transformers.js throws
+  // "Cannot specify `task` or `language` for an English-only model". Only pass
+  // them for multilingual models, where `transcribe` (vs translate) matters.
+  if (!englishOnly) {
+    options.task = 'transcribe';
+  }
+
+  const output = (await transcriber(samples, options as unknown as Record<string, unknown>)) as unknown as {
     text: string;
     chunks?: RawChunk[];
   };
