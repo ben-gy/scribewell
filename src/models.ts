@@ -64,7 +64,11 @@ export const LANGUAGES: Array<{ code: string; name: string }> = [
 const SETTINGS_KEY = 'scribewell.settings.v1';
 
 export const DEFAULT_SETTINGS: TranscribeSettings = {
-  model: 'Xenova/whisper-base.en',
+  // Tiny.en is the lightest, fastest checkpoint and is transcribed at full
+  // fp32 precision on WebGPU — a small, correct first-run default. Users who
+  // need more accuracy or other languages can switch to a Base/multilingual
+  // model in one click.
+  model: 'Xenova/whisper-tiny.en',
   language: 'auto',
   task: 'transcribe',
 };
