@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#faf7f2" />
+
+    <title>Scribewell — private in-browser transcription</title>
+    <meta
+      name="description"
+      content="Transcribe audio & video to text, subtitles (.srt/.vtt), and searchable transcripts entirely in your browser. Files never leave your device. No uploads, no accounts."
+    />
+
+    <!-- Open Graph / social preview -->
+    <meta property="og:title" content="Scribewell — private in-browser transcription" />
+    <meta
+      property="og:description"
+      content="Turn audio & video into text and subtitles without uploading a thing. Whisper runs locally in your browser."
+    />
+    <meta property="og:type" content="website" />
+
+    <!-- Security: CSP allows self + the Hugging Face CDN for the model weights (first load only). No audio is ever sent anywhere. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://huggingface.co https://*.huggingface.co https://cdn-lfs.huggingface.co https://cdn-lfs-us-1.huggingface.co blob: data:; worker-src 'self' blob:; child-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'none';"
+    />
+
+    <link rel="stylesheet" href="/src/styles/main.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="topbar-left">
+          <a class="brand" href="/">
+            <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+              <defs>
+                <linearGradient id="sw-grad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#7c5cff" />
+                  <stop offset="100%" stop-color="#5b3fd6" />
+                </linearGradient>
+              </defs>
+              <rect x="1" y="1" width="30" height="30" rx="8" fill="url(#sw-grad)" />
+              <g stroke="#ffffff" stroke-width="2.2" stroke-linecap="round">
+                <line x1="7" y1="13" x2="7" y2="19" />
+                <line x1="11" y1="9" x2="11" y2="23" />
+                <line x1="15" y1="11" x2="15" y2="21" />
+              </g>
+              <g stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.92">
+                <line x1="20" y1="12" x2="26" y2="12" />
+                <line x1="20" y1="16" x2="26" y2="16" />
+                <line x1="20" y1="20" x2="24" y2="20" />
+              </g>
+            </svg>
+            <span class="brand-name">Scribe<span class="brand-name-accent">well</span></span>
+          </a>
+          <span class="trust-badge" data-modal="tmpl-security" role="button" tabindex="0"
+            title="How your privacy is protected">
+            <span class="trust-dot"></span> runs entirely in your browser
+          </span>
+        </div>
+        <nav class="topbar-nav">
+          <button type="button" class="nav-link" data-modal="tmpl-how-it-works">how it works</button>
+          <button type="button" class="nav-link" data-modal="tmpl-security">threat model</button>
+          <button type="button" class="nav-link" data-modal="tmpl-about">about</button>
+        </nav>
+      </header>
+
+      <div class="main-grid">
+        <main id="app" class="main-content">
+          <!-- populated by src/main.ts -->
+        </main>
+        <aside id="event-drawer" aria-label="Event log">
+          <!-- populated by src/eventlog.ts -->
+        </aside>
+      </div>
+
+      <footer class="statusbar">
+        <div class="status-left">
+          <span class="status-pill">
+            <span class="dot-mini idle" id="sb-status-dot"></span>
+            <span class="label" id="sb-status-label">ready</span>
+          </span>
+          <span id="sb-engine" class="status-pill muted"></span>
+        </div>
+        <div class="status-right">
+          <span id="sb-progress"><span class="sb-key">progress</span> —</span>
+          <span id="sb-speed"><span class="sb-key">speed</span> —</span>
+          <span class="attribution">Built by
+            <a href="https://benrichardson.dev/" target="_blank" rel="noopener noreferrer">benrichardson.dev</a>
+          </span>
+        </div>
+      </footer>
+    </div>
+
+    <!-- ── How it works ── -->
+    <template id="tmpl-how-it-works">
+      <div class="modal-content">
+        <h2 class="modal-title">how it works</h2>
+        <ol class="steps">
+          <li>
+            <span class="step-num">01</span>
+            <div>
+              <h3>drop a recording</h3>
+              <p>
+                Pick or drop an audio or video file. It stays in this browser
+                tab — nothing is uploaded. Big files are fine; everything runs
+                locally.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="step-num">02</span>
+            <div>
+              <h3>decode to audio</h3>
+              <p>
+                The Web Audio API decodes the file to raw 16&nbsp;kHz mono
+                samples — the format the speech model expects. Video files are
+                handled too; only the audio track is read.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="step-num">03</span>
+            <div>
+              <h3>load Whisper locally</h3>
+              <p>
+                On first run the OpenAI <em>Whisper</em> model is downloaded once
+                from the Hugging Face CDN and cached. It then runs on your GPU
+                (WebGPU) or CPU (WebAssembly) — right here, in a Web Worker.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="step-num">04</span>
+            <div>
+              <h3>transcribe</h3>
+              <p>
+                The audio is transcribed in 30-second chunks with word-level
+                timing. You watch a real progress bar, not a fake spinner.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="step-num">05</span>
+            <div>
+              <h3>read, copy, export</h3>
+              <p>
+                Read the timestamped transcript, copy it, or download it as
+                plain text, <code>.srt</code>, or <code>.vtt</code> subtitles.
+                Once the model is cached, it all works offline.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </template>
+
+    <!-- ── Threat model ── -->
+    <template id="tmpl-security">
+      <div class="modal-content">
+        <h2 class="modal-title">threat model</h2>
+        <div class="security-grid">
+          <div class="security-card good">
+            <h3>what's protected</h3>
+            <ul>
+              <li>Your audio / video file — decoded and transcribed on your device, never uploaded</li>
+              <li>The transcript text — produced locally; only you download or copy it</li>
+              <li>No account, no cookies, no analytics, no tracking pixels</li>
+            </ul>
+          </div>
+          <div class="security-card bad">
+            <h3>what isn't</h3>
+            <ul>
+              <li>
+                <strong>First load only:</strong> the Whisper model weights are
+                fetched from the Hugging Face CDN. That's model data — your audio
+                is <em>never</em> part of any request. After caching it works offline.
+              </li>
+              <li>GitHub Pages logs the initial page request, like any website</li>
+            </ul>
+          </div>
+          <div class="security-card">
+            <h3>trust model</h3>
+            <ul>
+              <li>The static site bundle served by GitHub Pages (hash-pinned by the deploy)</li>
+              <li>The TLS chain to GitHub Pages, and — first load only — Hugging Face's CDN</li>
+              <li>The open-source transformers.js + onnxruntime-web that run the model</li>
+            </ul>
+          </div>
+        </div>
+        <p class="modal-foot">
+          Want to be certain? Load the page once, then turn off your network
+          (airplane mode) and transcribe — it keeps working with no connection.
+        </p>
+      </div>
+    </template>
+
+    <!-- ── About ── -->
+    <template id="tmpl-about">
+      <div class="modal-content">
+        <h2 class="modal-title">about Scribewell</h2>
+        <p class="about-lead">
+          Scribewell transcribes audio and video into text and subtitles
+          <strong>entirely in your browser</strong>. It exists because most
+          "free online transcription" tools make you upload your recording to a
+          server first — a dealbreaker for interviews with sources, medical or
+          legal recordings, and anything private.
+        </p>
+        <p>
+          It runs OpenAI's Whisper speech-recognition model locally using
+          WebGPU / WebAssembly, so your file never leaves your device. No
+          accounts, no per-minute fees, no telemetry.
+        </p>
+        <p class="about-links">
+          <a href="https://benrichardson.dev/" target="_blank" rel="noopener noreferrer">benrichardson.dev</a>
+          <span class="dotsep">·</span>
+          <a href="https://github.com/ben-gy/scribewell" target="_blank" rel="noopener noreferrer">source on GitHub</a>
+        </p>
+      </div>
+    </template>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
