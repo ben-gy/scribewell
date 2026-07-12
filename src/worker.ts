@@ -71,7 +71,10 @@ async function getTranscriber(model: ModelId): Promise<AutomaticSpeechRecognitio
   ) => Promise<AutomaticSpeechRecognitionPipeline>;
   transcriber = await build('automatic-speech-recognition', model, {
     device,
-    dtype: device === 'webgpu' ? 'fp16' : 'q8',
+    // fp32 on WebGPU: fp16 Whisper decoding is numerically unstable on many
+    // GPUs and degenerates into repeated punctuation ("​ ​ ​…"). fp32 is the
+    // reference precision and transcribes correctly; q8 keeps the CPU path light.
+    dtype: device === 'webgpu' ? 'fp32' : 'q8',
     progress_callback: (p: {
       status: string;
       file?: string;
