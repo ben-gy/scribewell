@@ -1,5 +1,10 @@
 // ── App bootstrap: wires UI, audio decode, and the Whisper worker ──
 
+// feedback:begin (managed by hub/scripts/feedback/backfill.mjs)
+import { mountFeedback } from './feedback';
+mountFeedback();
+// feedback:end
+
 import './styles/main.css';
 import { AppUI } from './ui';
 import { initGlossary } from './glossary';
