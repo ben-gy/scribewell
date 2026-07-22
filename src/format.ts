@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Ben Richardson — https://benrichardson.dev
+// Additional terms under AGPL-3.0 section 7(b) apply; see ADDITIONAL-TERMS.md.
 // ── Small, pure formatting helpers (unit-tested) ──
 
 /** Human-readable byte size, e.g. 1536 -> "1.5 KB". */

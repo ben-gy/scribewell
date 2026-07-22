@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Transcribe audio and video to text entirely in your browser — no uploads, works offline.",
+  "license": "AGPL-3.0-or-later",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

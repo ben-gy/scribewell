@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Ben Richardson — https://benrichardson.dev
+// Additional terms under AGPL-3.0 section 7(b) apply; see ADDITIONAL-TERMS.md.
 // ── DOM rendering, dropzone, progress, modals, results ──
 
 import { EventLog, type LogEntry } from './eventlog';
@@ -276,7 +279,7 @@ export class AppUI {
       <p>Scribewell turns speech into text without sending your recordings anywhere. It exists because the obvious way to transcribe a sensitive interview, therapy session, medical note, or confidential meeting — uploading it to some website — is exactly the thing you shouldn't do.</p>
       <p>It runs OpenAI's ${term('Whisper')} model directly in your browser using WebGPU / WebAssembly, so the audio never leaves your device.</p>
       <p>Built by <a href="https://benrichardson.dev/" target="_blank" rel="noopener">benrichardson.dev</a>. Source on <a href="https://github.com/ben-gy/scribewell" target="_blank" rel="noopener">GitHub</a>.</p>
-      <p class="modal-foot-note">Model: Whisper (tiny / base) via @huggingface/transformers. MIT licensed.</p>`;
+      <p class="modal-foot-note">Model: Whisper (tiny / base) via @huggingface/transformers.</p>`;
   }
 
   // ── Wiring ──
